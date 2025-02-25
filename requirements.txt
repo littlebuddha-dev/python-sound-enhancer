@@ -1,0 +1,8 @@
+numpy
+scipy
+librosa
+soundfile
+torch
+resampy
+subprocess32
+os
