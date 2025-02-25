@@ -1,9 +1,12 @@
 # python-sound-enhancer
 High-Quality Audio Enhancement Test on Intel Mac with Python 3.10
+
 GPU Processing Support
 Uses PyTorch MPS backend to accelerate processing on Intel Mac.
+
 Oversampling
 Processes at a high sampling rate (96kHz) to improve processing quality.
+
 Multiple Effects:
 Bass Enhancer (Low-frequency enhancement)
 Shelving Filter (Low and high-frequency adjustment)
@@ -17,6 +20,7 @@ Saturation
 Limiter
 Effect Evaluation
 Bass Enhancer
+
 Settings: bass_freq=80Hz, intensity=0.7
 Effect: Psychoacoustic bass enhancement boosts low frequencies around 80Hz and adds artificial harmonics at 160Hz (80Hz × 2). This makes bass sound "thicker" even on small speakers.
 Shelving Filter
