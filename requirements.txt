@@ -1,8 +1,29 @@
-numpy
-scipy
-librosa
-soundfile
-torch
-resampy
-subprocess32
-os
+# requirements.txt
+
+# Core numerical and scientific libraries
+numpy>=1.20.0,<2.0.0  # For numerical operations, restricted to version 1.x (e.g., 1.26.x is common)
+scipy>=1.7.0          # For signal processing (filters, STFT, etc.)
+
+# Audio processing
+librosa>=0.9.0        # For audio loading, resampling, and analysis features
+soundfile>=0.11.0     # For reading and writing audio files
+
+# Machine Learning / GPU support (if PyTorch MPS is used)
+torch>=1.12.0         # For potential GPU acceleration (MPS on macOS)
+# Note: torchvision and torchaudio are not directly used in this script,
+# but often installed alongside PyTorch. Keeping it minimal for now.
+
+# System utilities
+psutil>=5.8.0         # For system and process utilities (CPU count, memory usage)
+
+# Optional but recommended for development/debugging
+# logging (built-in)
+# warnings (built-in)
+# gc (built-in)
+# os (built-in)
+# subprocess (built-in)
+# multiprocessing (built-in)
+# concurrent.futures (built-in)
+# functools (built-in)
+# argparse (built-in, for CLI)
+# sys (built-in, for CLI)
