@@ -1,67 +1,156 @@
-# python-sound-enhancer
-High-Quality Audio Enhancement Test on Intel Mac with Python 3.10
+```markdown
+# Sound Enhancer (BBE-like Effects)
 
-GPU Processing Support
-Uses PyTorch MPS backend to accelerate processing on Intel Mac.
+This Python script provides a suite of audio processing tools designed to enhance sound quality, offering effects reminiscent of BBE (Sonic Maximizer) processors and other advanced audio mastering techniques. It includes functionalities for harmonic excitation, dynamic equalization, spectral processing, phase-linear filtering, advanced stereo imaging, adaptive dynamics, and lookahead limiting.
 
-Oversampling
-Processes at a high sampling rate (96kHz) to improve processing quality.
+The script supports two processing modes:
+1.  **Optimized Mode**: A balanced approach offering significant enhancement with good performance.
+2.  **Ultra Mode**: A high-quality mode that utilizes more advanced, computationally intensive algorithms for superior results, including phase-linear filters and high-quality resampling.
 
-Multiple Effects:
-Bass Enhancer (Low-frequency enhancement)
-Shelving Filter (Low and high-frequency adjustment)
-Harmonic Exciter (Harmonic generation)
-Dynamic EQ
-Spectral Processor
-Stereo Width Expansion
-Transient Shaper
-Multiband Compressor
-Saturation
-Limiter
-Effect Evaluation
-Bass Enhancer
+## Features
 
-Settings: bass_freq=80Hz, intensity=0.7
-Effect: Psychoacoustic bass enhancement boosts low frequencies around 80Hz and adds artificial harmonics at 160Hz (80Hz × 2). This makes bass sound "thicker" even on small speakers.
-Shelving Filter
-Low shelf: +4dB below 100Hz (Q=0.7)
-High shelf: +5dB above 6000Hz (Q=0.8)
-Effect: Creates a "smile curve EQ" effect, making the sound more dynamic and "lively."
-Harmonic Exciter
-Settings: Nonlinear distortion with intensity=0.5 in the 3000Hz–12000Hz range.
-Effect: Adds harmonics in the high-frequency range, enhancing clarity and detail, especially in vocals and string instruments.
-Dynamic EQ
-Settings: 3-band EQ, threshold=-24dB, ratio=1.5
-Effect: Dynamically adjusts gain based on volume, reducing overly loud frequencies and enhancing quieter ones, leading to a more balanced sound.
-Spectral Processor
-Settings: Low frequencies ×1.2, mid frequencies ×0.9, high frequencies ×1.3, brightness ×1.1
-Effect: Enhances lows and highs while slightly reducing mids for a "modern" sound profile. The brightness parameter fine-tunes the overall high-frequency tilt.
-Stereo Width Expansion
-Settings: Width ×1.3
-Effect: Processes mid and side signals separately, boosting the side signal to enhance stereo imaging and spatial depth.
-Transient Shaper
-Settings: Attack ×1.5, Sustain ×0.7
-Effect: Emphasizes the attack phase while reducing sustain, enhancing the punchiness of drums and percussion.
-Multiband Compressor
-Settings: Overall ratio = 1.5, Mid ratio = 1.8, Side ratio = 1.3
-Effect: Balances volume levels by compressing loud signals and boosting quieter ones. The stronger mid compression enhances the presence of vocals and main instruments.
-Saturation
-Settings: Amount = 0.5, Drive = 1.0, Mix = 1.0
-Effect: Adds dynamic, "warm" non-linear distortion, mimicking the natural thickness of analog processing.
-Limiter
-Settings: Threshold = 0.95, Output gain = 1.0
-Effect: Optimizes the final volume while preventing clipping (digital distortion), allowing for safe loudness maximization.
-Overall Effects
-By combining multiple stages of audio processing, this system delivers the following benefits:
+*   **BBE-like Processing**: Core engine for emulating the sonic characteristics of BBE processors, including:
+    *   Low-end contouring and bass enhancement.
+    *   High-frequency clarity and harmonic excitation.
+*   **Harmonic Exciter**:
+    *   Optimized single-band harmonic exciter.
+    *   Advanced multi-band harmonic exciter with phase-linear crossovers (Ultra Mode).
+*   **Dynamic Equalizer**: Adjusts EQ dynamically based on the input signal's content across multiple bands.
+*   **Spectral Processor**: Modifies the audio spectrum with controls for low, mid, high frequencies, and overall brightness.
+*   **Phase-Linear Filters**: FIR-based filters for equalization tasks where phase coherence is critical (Ultra Mode). Includes fallback to IIR filters if FIR design fails.
+*   **Advanced Stereo Imaging**:
+    *   Mid/Side based stereo width adjustment.
+    *   Binaural stereo widening for an immersive soundstage (Ultra Mode).
+*   **Adaptive Dynamics**:
+    *   Spectral Compressor: Frequency-dependent compression for targeted dynamic control (Ultra Mode).
+*   **Advanced Limiter**:
+    *   Lookahead Limiter: Prevents peaks effectively with minimal audible distortion by anticipating them (Ultra Mode).
+*   **GPU Acceleration**: Supports MPS (Apple Silicon GPUs) for PyTorch-based operations, with CPU fallback.
+*   **Memory Management**: Includes utilities to monitor and clear memory, especially important for large audio files and intensive processing.
+*   **Chunk Processing**: Processes audio in chunks for memory efficiency, especially for long files, using overlap-add with Hann windowing.
+*   **MP3 Support**: Automatically converts MP3 input files to WAV for processing using FFmpeg (FFmpeg must be installed and in your system's PATH).
+*   **Configurable Parameters**: A wide range of parameters can be tuned to achieve desired sonic results.
+*   **Two Processing Modes**:
+    *   `optimized`: Faster processing with good quality.
+    *   `ultra`: Highest quality processing using advanced algorithms like SOXR resampling and phase-linear filters.
 
-Improved Clarity: Enhances high and low frequencies while refining details through transient shaping.
-Added Warmth and Thickness: Introduces analog-like characteristics through saturation and bass enhancement.
-Expanded Stereo Imaging: Creates a wider spatial sound field using stereo width expansion.
-Optimized Dynamic Range: Controls audio dynamics through compressors and limiters.
-Enhanced Frequency Balance: Adjusts tonal balance using multiple EQs and spectral processing.
-This system achieves results similar to professional mastering processes. The 96kHz oversampling minimizes aliasing (digital artifacts), ensuring high-quality sound processing.
+## Prerequisites
 
-Requirements
-FFmpeg is required.
-Replace input.mp3 with your music file.
-The output will be saved as output.wav.
+*   Python 3.8 or newer.
+*   FFmpeg: Required for MP3 file input. Ensure it's installed and accessible from your system's PATH.
+    *   You can download FFmpeg from [ffmpeg.org](https://ffmpeg.org/download.html).
+
+## Installation
+
+1.  **Clone the repository (or download the script):**
+    ```bash
+    git clone https://your-github-username/your-repository-name.git
+    cd your-repository-name
+    ```
+
+2.  **Create a virtual environment (recommended):**
+    ```bash
+    python -m venv venv
+    source venv/bin/activate  # On Windows: venv\Scripts\activate
+    ```
+
+3.  **Install the required Python packages:**
+    The script uses several libraries for audio processing, numerical computation, and system utilities. Install them using the provided `requirements.txt` file:
+    ```bash
+    pip install -r requirements.txt
+    ```
+    The `requirements.txt` file includes:
+    ```
+    numpy>=1.20.0,<2.0.0
+    scipy>=1.7.0
+    librosa>=0.9.0
+    soundfile>=0.11.0
+    torch>=1.12.0
+    psutil>=5.8.0
+    ```
+
+## Usage
+
+The script is run from the command line.
+
+**Basic syntax:**
+
+```bash
+python Sound_Enhancer_new.py <input_file> [--mode <mode>] [--suffix <suffix>]
+```
+
+**Arguments:**
+
+*   `input_file`: Path to the input audio file (MP3 or WAV).
+*   `--mode <mode>`: (Optional) Processing mode.
+    *   `ultra`: For ultra-high quality processing (default).
+    *   `optimized`: For faster, optimized processing.
+*   `--suffix <suffix>`: (Optional) Suffix to add to the output filename (before the `.wav` extension). Default is `_enhanced`.
+
+**Examples:**
+
+1.  **Process an MP3 file in Ultra mode (default):**
+    ```bash
+    python Sound_Enhancer_new.py audio/my_song.mp3
+    ```
+    This will create `audio/my_song_enhanced.wav`.
+
+2.  **Process a WAV file in Optimized mode:**
+    ```bash
+    python Sound_Enhancer_new.py samples/track.wav --mode optimized
+    ```
+    This will create `samples/track_enhanced.wav`.
+
+3.  **Process an MP3 file and specify a custom output suffix:**
+    ```bash
+    python Sound_Enhancer_new.py song.mp3 --suffix _bbe_ultra
+    ```
+    This will create `song_bbe_ultra.wav`.
+
+The script will output a WAV file with the enhancements applied. Log messages during processing will indicate the steps being performed and any warnings or errors.
+
+## Customization
+
+The core processing parameters are defined in the `PARAMS` dictionary within the `Sound_Enhancer_new.py` script. You can modify these default values directly in the script if you need to fine-tune the effects for specific applications.
+
+Advanced features in "Ultra" mode (like `use_phase_linear`, `multiband_exciter`, etc.) are enabled by default when running in that mode but can also be adjusted within the `ultra_effect_process` function or by modifying `PARAMS` if those flags are exposed there.
+
+## License
+
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+
+---
+
+**MIT License**
+
+Copyright (c) [2025] [littlebuddha]
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+```
+
+**To make this fully ready for GitHub:**
+
+1.  **Replace Placeholders:**
+    *   In the "Installation" section: `https://your-github-username/your-repository-name.git` should be replaced with the actual URL of your repository.
+    *   In the MIT License text at the end: `[Year]` should be the current year (e.g., `2023` or `2024`) and `[Your Name/Organization]` should be your GitHub username, your name, or your organization's name.
+2.  **Create a `LICENSE` file:**
+    Copy the MIT License text (starting from "MIT License" and ending with "DEALINGS IN THE SOFTWARE.") into a new file named `LICENSE` (no extension) in the root of your repository. The `README.md` already links to this.
+3.  **Ensure `Sound_Enhancer_new.py` and `requirements.txt` are in the repository root.**
+
+This `README.md` aims to be comprehensive, covering the purpose, key features, setup, usage, and licensing of your script.
