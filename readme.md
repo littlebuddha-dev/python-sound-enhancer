@@ -44,7 +44,7 @@ The script supports two processing modes:
 
 1.  **Clone the repository (or download the script):**
     ```bash
-    git clone https://your-github-username/your-repository-name.git
+    git clone https://github.com/littlebuddha-dev/python-sound-enhancer.git
     cd your-repository-name
     ```
 
